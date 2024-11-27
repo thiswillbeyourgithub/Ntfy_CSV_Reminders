@@ -1,4 +1,5 @@
 from beartype import beartype
+import time
 # TODO_imports
 
 @beartype  # this will apply to all methods
@@ -7,10 +8,16 @@ class NtfyCSVReminders:
 
     def __init__(
         self,
+        delay: int = 0
         ) -> None:
 
         """
-        # TODO_docstring
+        Initialize the NtfyCSVReminders class
+        
+        Args:
+            delay: Number of seconds to delay/sleep after initialization
         """
+        if delay > 0:
+            time.sleep(delay)
 
 # TODO_code

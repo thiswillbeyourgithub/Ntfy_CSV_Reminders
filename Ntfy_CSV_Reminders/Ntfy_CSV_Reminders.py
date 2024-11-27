@@ -1,5 +1,6 @@
 from beartype import beartype
 from pathlib import Path
+import random
 import time
 from typing import Union
 # TODO_imports
@@ -31,6 +32,6 @@ class NtfyCSVReminders:
         assert self.input_csv.exists(), f"Input CSV file not found: {self.input_csv}"
         assert self.state_path.exists(), f"State file not found: {self.state_path}"
         if delay > 0:
-            time.sleep(delay)
+            time.sleep(random.uniform(0, delay))
 
 # TODO_code

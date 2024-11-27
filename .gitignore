@@ -1,6 +1,7 @@
 
 **/*pycache*
 **/*egg-info*
+dist
 
 .env
 .env.leave

@@ -1,3 +1,4 @@
+import requests
 from beartype import beartype
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -16,7 +17,8 @@ class NtfyCSVReminders:
         self,
         input_csv: Union[str, Path],
         state_path: Union[str, Path],
-        delay: int = 0
+        delay: int = 0,
+        ntfy_topic: str = None,
         ) -> None:
 
         """
@@ -26,7 +28,10 @@ class NtfyCSVReminders:
             input_csv: Path to input CSV file
             state_path: Path to state file
             delay: Number of seconds to delay/sleep after initialization
+            ntfy_topic: ntfy.sh topic
         """
+        assert ntfy_topic.strip()
+        self.ntfy_topic = ntfy_topic
         # Convert to Path objects if strings
         self.input_csv = Path(input_csv)
         self.state_path = Path(state_path)
@@ -76,17 +81,51 @@ class NtfyCSVReminders:
             with open(self.state_path, 'w') as f:
                 json.dump(self.state, f)
 
-        # Check each reminder
+        try:
+            self.loop()
+        except Exception as e:
+            self.__send_notif__(f"Error: '{e}'")
+
+
+    def loop(self):
+        """Check each reminder"""
         current_time = time.time()
         for day_delay, text in self.reminders:
             if text not in self.state:
                 self.state[text] = []
+
             elif self.state[text]:  # If there are timestamps
                 last_reminder = self.state[text][-1]
                 days_since = (current_time - last_reminder) / (24 * 3600)
-                if days_since < day_delay:
-                    raise ValueError(
-                        f"Reminder '{text}' was sent {days_since:.1f} days ago, "
-                        f"but delay is {day_delay} days"
-                    )
+                if days_since >= day_delay:
+                    self.do_remind(day_delay, text)
+                elif random.random() <= 1 / day_delay:
+                    self.do_remind(day_delay, text)
 
+
+    def do_remind(self, day_delay: int, text: str):
+        self.__send_notif__(message=text)
+        self.state[text].append(int(time.time()))
+        self.__save_state__()
+
+
+    def __send_notif__(
+        self,
+        message: str,
+        ):
+        """
+        Send a notification to a specified ntfy.sh topic.
+        """
+        requests.post(
+            url=f"https://ntfy.sh/{self.ntfy_topic}",
+            data=message.encode(encoding='utf-8'),
+            headers={
+                "Title": "Reminder",
+                # "Priority": "urgent",
+                # "Tags": "warning,skull"
+            },
+        )
+
+    def __save_state__(self):
+        with open(self.state_path, 'w') as f:
+            f.write(json.dumps(self.state, indent=2, ensure_ascii=False, pretty=True))

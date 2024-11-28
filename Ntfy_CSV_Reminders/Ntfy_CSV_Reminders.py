@@ -15,6 +15,7 @@ class NtfyCSVReminders:
         states_path: Union[str, Path] = "states.json",
         delay: int = 0,
         ntfy_topic: str = None,
+        verbose: bool = False
         ) -> None:
 
         """
@@ -31,6 +32,7 @@ class NtfyCSVReminders:
         # Convert to Path objects if strings
         self.input_csv = Path(input_csv)
         self.states_path = Path(states_path)
+        self.verbose = verbose
 
         # Verify files exist
         assert self.input_csv.exists(), f"Input CSV file not found: {self.input_csv}"
@@ -105,10 +107,14 @@ class NtfyCSVReminders:
             elif self.states[text]:  # If there are timestamps
                 last_reminder = self.states[text][-1]
                 days_since = (current_time - last_reminder) / (24 * 3600)
+                chance = random.random()
                 if days_since >= day_delay:
                     self.do_remind(day_delay, text)
-                elif random.random() <= 1 / day_delay:
-                    self.do_remind(day_delay, text)
+                elif chance <= 1 / day_delay:
+                    if self.verbose:
+                        self.do_remind(day_delay, text + f"\nChance: {chance:.4f}\nThreshold: {1/day_delay:.4f}")
+                    else:
+                        self.do_remind(day_delay, text)
 
 
     def do_remind(self, day_delay: int, text: str):

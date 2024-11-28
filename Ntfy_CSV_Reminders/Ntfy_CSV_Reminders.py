@@ -67,7 +67,7 @@ class NtfyCSVReminders:
             raise ValueError(f"Duplicate reminder texts found: {', '.join(set(duplicates))}")
 
         # Load or create state file
-        self.state: Dict[str, List[float]] = {}
+        self.state: Dict[str, List[int]] = {}
         if self.state_path.exists():
             with open(self.state_path, 'r') as f:
                 self.state = json.load(f)

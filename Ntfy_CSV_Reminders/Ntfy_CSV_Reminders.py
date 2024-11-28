@@ -1,13 +1,11 @@
 import fire
 import requests
-from beartype import beartype
 from pathlib import Path
 import json
 import random
 import time
 from typing import Union, List, Tuple, Dict
 
-@beartype  # this will apply to all methods
 class NtfyCSVReminders:
     __VERSION__: str = "0.0.1"
 

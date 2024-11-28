@@ -75,7 +75,12 @@ class NtfyCSVReminders:
         self.states: Dict[str, List[int]] = {}
         if self.states_path.exists():
             with open(self.states_path, 'r') as f:
-                self.states = json.load(f)
+                content = f.read().strip()
+            if content:
+                loaded = json.loads(content)
+                assert isinstance(loaded, dict), type(loaded)
+                for k, v in loaded.items():
+                    self.states[k] = v
         else:
             # Create empty states file
             with open(self.states_path, 'w') as f:

@@ -17,7 +17,7 @@ class NtfyCSVReminders:
     def __init__(
         self,
         input_csv: Union[str, Path] = "input.csv",
-        state_path: Union[str, Path] = "states.json",
+        states_path: Union[str, Path] = "states.json",
         delay: int = 0,
         ntfy_topic: str = None,
         ) -> None:
@@ -27,7 +27,7 @@ class NtfyCSVReminders:
 
         Args:
             input_csv: Path to input CSV file
-            state_path: Path to state file
+            states_path: Path to states file
             delay: Number of seconds to delay/sleep after initialization
             ntfy_topic: ntfy.sh topic
         """
@@ -35,11 +35,11 @@ class NtfyCSVReminders:
         self.ntfy_topic = ntfy_topic
         # Convert to Path objects if strings
         self.input_csv = Path(input_csv)
-        self.state_path = Path(state_path)
+        self.states_path = Path(states_path)
 
         # Verify files exist
         assert self.input_csv.exists(), f"Input CSV file not found: {self.input_csv}"
-        assert self.state_path.exists(), f"State file not found: {self.state_path}"
+        assert self.states_path.exists(), f"states file not found: {self.states_path}"
         if delay > 0:
             time.sleep(random.uniform(0, delay))
 
@@ -72,15 +72,15 @@ class NtfyCSVReminders:
             duplicates = [text for text in reminder_texts if reminder_texts.count(text) > 1]
             raise ValueError(f"Duplicate reminder texts found: {', '.join(set(duplicates))}")
 
-        # Load or create state file
-        self.state: Dict[str, List[int]] = {}
-        if self.state_path.exists():
-            with open(self.state_path, 'r') as f:
-                self.state = json.load(f)
+        # Load or create states file
+        self.states: Dict[str, List[int]] = {}
+        if self.states_path.exists():
+            with open(self.states_path, 'r') as f:
+                self.states = json.load(f)
         else:
-            # Create empty state file
-            with open(self.state_path, 'w') as f:
-                json.dump(self.state, f)
+            # Create empty states file
+            with open(self.states_path, 'w') as f:
+                json.dump(self.states, f)
 
         try:
             self.loop()
@@ -92,12 +92,12 @@ class NtfyCSVReminders:
         """Check each reminder"""
         current_time = time.time()
         for day_delay, text in self.reminders:
-            if text not in self.state:
-                self.state[text] = []
+            if text not in self.states:
+                self.states[text] = []
                 self.do_remind(day_delay, text)
 
-            elif self.state[text]:  # If there are timestamps
-                last_reminder = self.state[text][-1]
+            elif self.states[text]:  # If there are timestamps
+                last_reminder = self.states[text][-1]
                 days_since = (current_time - last_reminder) / (24 * 3600)
                 if days_since >= day_delay:
                     self.do_remind(day_delay, text)
@@ -107,8 +107,8 @@ class NtfyCSVReminders:
 
     def do_remind(self, day_delay: int, text: str):
         self.__send_notif__(message=text)
-        self.state[text].append(int(time.time()))
-        self.__save_state__()
+        self.states[text].append(int(time.time()))
+        self.__save_states__()
 
 
     def __send_notif__(
@@ -128,9 +128,9 @@ class NtfyCSVReminders:
             },
         )
 
-    def __save_state__(self):
-        with open(self.state_path, 'w') as f:
-            f.write(json.dumps(self.state, indent=2, ensure_ascii=False, pretty=True))
+    def __save_states__(self):
+        with open(self.states_path, 'w') as f:
+            f.write(json.dumps(self.states, indent=2, ensure_ascii=False, pretty=True))
 
 
 if __name__ == "__main__":

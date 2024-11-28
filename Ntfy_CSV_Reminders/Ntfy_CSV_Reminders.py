@@ -47,6 +47,7 @@ class NtfyCSVReminders:
             content = f.read()
         rows = content.strip().splitlines()
         rows = [r for r in rows if r.strip() and not r.startswith("#")]
+        assert rows, "No rows found"
         for i, row in enumerate(rows):
             if len(row) != 2:
                 raise ValueError(f"Row {i} must have exactly 2 elements, got {len(row)}")

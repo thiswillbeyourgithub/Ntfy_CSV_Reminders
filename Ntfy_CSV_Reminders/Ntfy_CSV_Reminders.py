@@ -46,8 +46,8 @@ class NtfyCSVReminders:
                 
                 # Validate first element is positive int
                 try:
-                    delay = int(row[0])
-                    if delay <= 0:
+                    day_delay = int(row[0])
+                    if day_delay <= 0:
                         raise ValueError
                 except ValueError:
                     raise ValueError(f"Row {i}: First element must be a positive integer, got '{row[0]}'")
@@ -56,6 +56,6 @@ class NtfyCSVReminders:
                 if not row[1].strip():
                     raise ValueError(f"Row {i}: Second element must be a non-empty string")
                 
-                self.reminders.append((delay, row[1].strip()))
+                self.reminders.append((day_delay, row[1].strip()))
 
 # TODO_code

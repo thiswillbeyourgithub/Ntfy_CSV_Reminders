@@ -1,4 +1,5 @@
 from beartype import beartype
+from datetime import datetime, timedelta
 from pathlib import Path
 import csv
 import json
@@ -74,5 +75,19 @@ class NtfyCSVReminders:
             # Create empty state file
             with open(self.state_path, 'w') as f:
                 json.dump(self.state, f)
+
+        # Check each reminder
+        current_time = time.time()
+        for day_delay, text in self.reminders:
+            if text not in self.state:
+                self.state[text] = []
+            elif self.state[text]:  # If there are timestamps
+                last_reminder = self.state[text][-1]
+                days_since = (current_time - last_reminder) / (24 * 3600)
+                if days_since < day_delay:
+                    raise ValueError(
+                        f"Reminder '{text}' was sent {days_since:.1f} days ago, "
+                        f"but delay is {day_delay} days"
+                    )
 
 # TODO_code

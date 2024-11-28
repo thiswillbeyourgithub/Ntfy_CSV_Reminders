@@ -1,3 +1,4 @@
+import fire
 import requests
 from beartype import beartype
 from datetime import datetime, timedelta
@@ -129,3 +130,7 @@ class NtfyCSVReminders:
     def __save_state__(self):
         with open(self.state_path, 'w') as f:
             f.write(json.dumps(self.state, indent=2, ensure_ascii=False, pretty=True))
+
+
+if __name__ == "__main__":
+    fire.Fire(NtfyCSVReminders)

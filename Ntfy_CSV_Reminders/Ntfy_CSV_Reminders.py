@@ -1,9 +1,10 @@
 from beartype import beartype
 from pathlib import Path
 import csv
+import json
 import random
 import time
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Dict
 # TODO_imports
 
 @beartype  # this will apply to all methods
@@ -57,5 +58,15 @@ class NtfyCSVReminders:
                     raise ValueError(f"Row {i}: Second element must be a non-empty string")
                 
                 self.reminders.append((day_delay, row[1].strip()))
+
+        # Load or create state file
+        self.state: Dict[str, List[float]] = {}
+        if self.state_path.exists():
+            with open(self.state_path, 'r') as f:
+                self.state = json.load(f)
+        else:
+            # Create empty state file
+            with open(self.state_path, 'w') as f:
+                json.dump(self.state, f)
 
 # TODO_code

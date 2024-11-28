@@ -42,7 +42,7 @@ class NtfyCSVReminders:
         with open(self.input_csv, 'r') as f:
             content = f.read()
         rows = content.strip().splitlines()
-        rows = [r for r in rows if r.strip() and not r.startswith("#")]
+        rows = [r.strip().split(",", 1) for r in rows if r.strip() and not r.startswith("#")]
         assert rows, "No rows found"
         for i, row in enumerate(rows):
             if len(row) != 2:

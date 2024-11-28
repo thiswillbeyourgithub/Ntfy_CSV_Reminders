@@ -9,3 +9,5 @@ dist
 
 TODO_gitignore
 .aider*
+inputs.csv
+states.json

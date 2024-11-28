@@ -117,7 +117,7 @@ class NtfyCSVReminders:
         Send a notification to a specified ntfy.sh topic.
         """
         requests.post(
-            url=f"https://ntfy.sh/{self.ntfy_topic}",
+            url=f"https://ntfy.sh/{self.ntfy_topic}" if "http" not in self.ntfy_topic else self.ntfy_topic,
             data=message.encode(encoding='utf-8'),
             headers={
                 "Title": "Reminder",

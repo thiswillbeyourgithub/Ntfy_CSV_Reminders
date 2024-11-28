@@ -85,6 +85,9 @@ class NtfyCSVReminders:
             with open(self.states_path, 'w') as f:
                 json.dump(self.states, f)
 
+        for k, v in self.states.items():
+            self.states[k] = sorted(v)
+
         try:
             self.loop()
         except Exception as e:

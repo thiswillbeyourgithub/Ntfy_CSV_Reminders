@@ -129,7 +129,7 @@ class NtfyCSVReminders:
 
     def __save_states__(self):
         with open(self.states_path, 'w') as f:
-            f.write(json.dumps(self.states, indent=2, ensure_ascii=False, pretty=True))
+            f.write(json.dumps(self.states, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":

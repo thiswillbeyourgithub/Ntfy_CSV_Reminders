@@ -16,7 +16,7 @@ class NtfyCSVReminders:
 
     def __init__(
         self,
-        input_csv: Union[str, Path] = "input.csv",
+        input_csv: Union[str, Path] = "inputs.csv",
         states_path: Union[str, Path] = "states.json",
         delay: int = 0,
         ntfy_topic: str = None,

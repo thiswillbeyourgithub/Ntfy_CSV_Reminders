@@ -44,27 +44,28 @@ class NtfyCSVReminders:
         # Load and validate CSV
         self.reminders: List[Tuple[int, str]] = []
         with open(self.input_csv, 'r') as f:
-            rows = f.read().strip().splitlines()
-            rows = [r for r in rows if r.strip() and not r.startswith("#")]
-            for i, row in enumerate(rows):
-                if len(row) != 2:
-                    raise ValueError(f"Row {i} must have exactly 2 elements, got {len(row)}")
+            content = f.read()
+        rows = content.strip().splitlines()
+        rows = [r for r in rows if r.strip() and not r.startswith("#")]
+        for i, row in enumerate(rows):
+            if len(row) != 2:
+                raise ValueError(f"Row {i} must have exactly 2 elements, got {len(row)}")
 
-                day_delay, text = row
+            day_delay, text = row
 
-                try:
-                    day_delay = int(day_delay)
-                except ValueError:
-                    raise ValueError(f"Row {i}: First element must be a positive integer, got '{row[0]}'")
-                if day_delay <= 0:
-                    raise ValueError
+            try:
+                day_delay = int(day_delay)
+            except ValueError:
+                raise ValueError(f"Row {i}: First element must be a positive integer, got '{row[0]}'")
+            if day_delay <= 0:
+                raise ValueError
 
-                # Validate second element is non-empty string
-                text = text.strip()
-                if not text:
-                    raise ValueError(f"Row {i}: Second element must be a non-empty string")
+            # Validate second element is non-empty string
+            text = text.strip()
+            if not text:
+                raise ValueError(f"Row {i}: Second element must be a non-empty string")
 
-                self.reminders.append((day_delay, text))
+            self.reminders.append((day_delay, text))
 
         # Check for duplicate reminder texts
         reminder_texts = [reminder[1] for reminder in self.reminders]

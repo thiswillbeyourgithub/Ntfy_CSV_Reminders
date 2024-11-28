@@ -59,6 +59,12 @@ class NtfyCSVReminders:
                 
                 self.reminders.append((day_delay, row[1].strip()))
 
+        # Check for duplicate reminder texts
+        reminder_texts = [reminder[1] for reminder in self.reminders]
+        if len(reminder_texts) != len(set(reminder_texts)):
+            duplicates = [text for text in reminder_texts if reminder_texts.count(text) > 1]
+            raise ValueError(f"Duplicate reminder texts found: {', '.join(set(duplicates))}")
+
         # Load or create state file
         self.state: Dict[str, List[float]] = {}
         if self.state_path.exists():

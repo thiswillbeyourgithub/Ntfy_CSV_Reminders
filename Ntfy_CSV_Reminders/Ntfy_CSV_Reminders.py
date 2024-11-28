@@ -39,7 +39,6 @@ class NtfyCSVReminders:
 
         # Verify files exist
         assert self.input_csv.exists(), f"Input CSV file not found: {self.input_csv}"
-        assert self.states_path.exists(), f"states file not found: {self.states_path}"
         if delay > 0:
             time.sleep(random.uniform(0, delay))
 

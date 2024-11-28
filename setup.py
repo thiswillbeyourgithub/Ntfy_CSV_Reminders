@@ -8,20 +8,19 @@ with open("README.md", "r") as readme:
 setup(
     name="Ntfy_CSV_Reminders",
     version="0.0.1",
-    description="TODO_description",
+    description="Probabilistic daily reminders via ntfy from csv",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="TODO_URL",
+    url="https://github.com/thiswillbeyourgithub/Ntfy_CSV_Reminders",
     packages=find_packages(),
 
-    # TODO_check_values
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
     license="GPLv3",
-    keywords=["TODO_keywords"],
+    keywords=["ntfy.sh", "reminders", "csv", "tool", "memory", "distraction", "distracted", "todo", "list"],
     python_requires=">=3.11",
 
     entry_points={
@@ -33,15 +32,5 @@ setup(
     install_requires=[
         'fire >= 0.6.0',
         'beartype >= 0.19.0',
-        # TODO_req
-    ],
-    extra_require={
-    'feature1': [
-        # TODO_req
-        ],
-    'feature2': [
-        # TODO_req
-        ]
-    },
-
+    ]
 )

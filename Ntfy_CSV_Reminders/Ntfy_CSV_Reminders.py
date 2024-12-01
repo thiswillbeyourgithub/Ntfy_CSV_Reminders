@@ -118,6 +118,12 @@ class NtfyCSVReminders:
 
 
     def do_remind(self, day_delay: int, text: str):
+        if hasattr(self, "latest_notif"):
+            # add a delay to reduce the strain on ntfy's servers
+            diff = time.time() - self.latest_notif
+            if diff <= 10:
+                time.sleep(10 - diff)
+        self.latest_notif = time.time()
         self.__send_notif__(message=text + f"\n(Message every {day_delay} days)")
         self.states[text].append(int(time.time()))
         self.__save_states__()

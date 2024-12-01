@@ -118,7 +118,7 @@ class NtfyCSVReminders:
 
 
     def do_remind(self, day_delay: int, text: str):
-        self.__send_notif__(message=text)
+        self.__send_notif__(message=text + f"\n(Message every {day_delay} days)")
         self.states[text].append(int(time.time()))
         self.__save_states__()
 

@@ -123,7 +123,7 @@ class NtfyCSVReminders:
             # add a delay to reduce the strain on ntfy's servers
             diff = time.time() - self.latest_notif
             if diff <= 10:
-                time.sleep(10 - diff)
+                time.sleep(max(0, 10 - diff))
         self.latest_notif = time.time()
         self.__send_notif__(message=text + f"\n(Message every {day_delay} days)")
         self.states[text].append(int(time.time()))

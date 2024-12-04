@@ -110,22 +110,22 @@ class NtfyCSVReminders:
                 chance = random.random()
                 threshold = 1 / day_delay
                 if days_since >= day_delay:
-                    self.do_remind(day_delay, text)
+                    self.do_remind(text, extra="\nMessage every {day_delay} days")
                 elif chance <= threshold:
                     if self.verbose:
-                        self.do_remind(text + f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
+                        self.do_remind(text, extra=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
                     else:
                         self.do_remind(text)
 
 
-    def do_remind(self, text: str):
+    def do_remind(self, text: str, extra: str = ""):
         if hasattr(self, "latest_notif"):
             # add a delay to reduce the strain on ntfy's servers
             diff = time.time() - self.latest_notif
             if diff <= 10:
                 time.sleep(max(0, 10 - diff))
         self.latest_notif = time.time()
-        self.__send_notif__(message=text)
+        self.__send_notif__(message=text + extra)
         self.states[text].append(int(time.time()))
         self.__save_states__()
 

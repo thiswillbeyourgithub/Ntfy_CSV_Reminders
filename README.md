@@ -31,3 +31,24 @@ Each line has two parts:
 For example, with `5, Remember to water the plants`:
 - If it's been 5+ days since the last reminder, it will definitely send
 - Otherwise, each day there's a 1/5 (20%) chance to send the reminder
+
+# Usage
+```bash
+Ntfy_CSV_Reminders --ntfy_topic=your_topic [OPTIONS]
+```
+
+Required:
+- `--ntfy_topic`: Your ntfy.sh topic for receiving notifications
+
+Optional:
+- `--input_csv`: Path to your CSV file (default: "inputs.csv")
+- `--states_path`: Path to save reminder states (default: "states.json")
+- `--delay`: Random delay between 0-N seconds before checking reminders (default: 0)
+- `--verbose`: Show probability details in notifications (default: False)
+
+The `delay` parameter is particularly useful when running via cron. Instead of getting all reminders at exactly midnight (or whenever cron runs), adding something like `--delay=3600` will spread them randomly across the first hour. This makes the reminders feel even more natural and unexpected.
+
+Example:
+```bash
+Ntfy_CSV_Reminders --ntfy_topic=my_reminders --delay=1800 --input_csv=my_tasks.csv
+```

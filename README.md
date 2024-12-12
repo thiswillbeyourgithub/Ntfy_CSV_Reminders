@@ -1,8 +1,12 @@
 
 # Ntfy_CSV_Reminders
-Send a notification every few days as reminder. Inputs are based on a simple csv text file.
+Simple phone notifications with random timing. Just write:
+```
+n, do something
+```
+And get reminded with 1/n probability each day. Perfect for those "should do this sometime this week" tasks!
 
-This tool was designed to be run daily via cron to send "unexpected" reminders at random intervals. Instead of getting the same reminder every X days, it uses probability to determine when to send notifications. This makes the reminders feel more spontaneous and can help prevent notification fatigue.
+Run it daily (via cron) and it uses probability to make reminders feel spontaneous rather than predictable. Great for avoiding notification fatigue while still keeping tasks on your radar.
 
 # Getting started
 * From pypi:

@@ -1,6 +1,8 @@
 
 # Ntfy_CSV_Reminders
-Simple phone notifications with random timing. Just write:
+A Python tool that sends random-timing phone notifications for recurring tasks by using daily probability checks based on CSV-defined frequencies.
+
+Simple phone notifications with random timing. Just write a csv file like:
 ```
 n, do something
 ```
@@ -39,10 +41,10 @@ Ntfy_CSV_Reminders --ntfy_topic=your_topic [OPTIONS]
 
 Required:
 - `--ntfy_topic`: Your ntfy.sh topic for receiving notifications
-
-Optional:
 - `--input_csv`: Path to your CSV file (default: "inputs.csv")
 - `--states_path`: Path to save reminder states (default: "states.json")
+
+Optional:
 - `--delay`: Random delay between 0-N seconds before checking reminders (default: 0)
 - `--verbose`: Show probability details in notifications (default: False)
 

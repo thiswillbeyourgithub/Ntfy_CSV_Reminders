@@ -24,7 +24,8 @@ class NtfyCSVReminders:
         Args:
             input_csv: Path to input CSV file
             states_path: Path to states file
-            delay: Number of seconds to delay/sleep after initialization
+            delay: An interval beteen 0 and delay will occur before you
+            receive the notification, ensuring "unexpectedness"
             ntfy_topic: ntfy.sh topic
         """
         assert ntfy_topic.strip()
@@ -33,11 +34,10 @@ class NtfyCSVReminders:
         self.input_csv = Path(input_csv)
         self.states_path = Path(states_path)
         self.verbose = verbose
+        self.delay = delay
 
         # Verify files exist
         assert self.input_csv.exists(), f"Input CSV file not found: {self.input_csv}"
-        if delay > 0:
-            time.sleep(random.uniform(0, delay))
 
         # Load and validate CSV
         self.reminders: List[Tuple[int, str]] = []
@@ -137,11 +137,15 @@ class NtfyCSVReminders:
         """
         Send a notification to a specified ntfy.sh topic.
         """
+        delay_arg = {}
+        if self.delay:
+            delay_arg["At"] = int(time.time()) + int(random.uniform(0, self.delay))
         requests.post(
             url=f"https://ntfy.sh/{self.ntfy_topic}" if "http" not in self.ntfy_topic else self.ntfy_topic,
             data=message.encode(encoding='utf-8'),
             headers={
                 "Title": "Reminder",
+                **delay_arg,
                 # "Priority": "urgent",
                 # "Tags": "warning,skull"
             },

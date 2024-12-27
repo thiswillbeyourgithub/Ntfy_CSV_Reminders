@@ -7,7 +7,7 @@ with open("README.md", "r") as readme:
 
 setup(
     name="Ntfy_CSV_Reminders",
-    version="0.0.6",
+    version="0.1.0",
     description="Probabilistic daily reminders via ntfy from csv",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -139,7 +139,7 @@ class NtfyCSVReminders:
         """
         delay_arg = {}
         if self.delay:
-            delay_arg["At"] = int(time.time()) + int(random.uniform(0, self.delay))
+            delay_arg["At"] = str(int(time.time()) + int(random.uniform(0, self.delay)))
         requests.post(
             url=f"https://ntfy.sh/{self.ntfy_topic}" if "http" not in self.ntfy_topic else self.ntfy_topic,
             data=message.encode(encoding='utf-8'),

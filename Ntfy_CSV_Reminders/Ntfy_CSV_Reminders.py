@@ -50,7 +50,7 @@ class NtfyCSVReminders:
             if len(row) != 2:
                 raise ValueError(f"Row {i} must have exactly 2 elements, got {len(row)}")
 
-            day_delay, text = row
+            day_delay, task = row
 
             try:
                 day_delay = int(day_delay)
@@ -60,11 +60,11 @@ class NtfyCSVReminders:
                 raise ValueError
 
             # Validate second element is non-empty string
-            text = text.strip()
-            if not text:
+            task = task.strip()
+            if not task:
                 raise ValueError(f"Row {i}: Second element must be a non-empty string")
 
-            self.reminders.append((day_delay, text))
+            self.reminders.append((day_delay, task))
 
         # Check for duplicate reminder texts
         reminder_texts = [reminder[1] for reminder in self.reminders]
@@ -99,34 +99,34 @@ class NtfyCSVReminders:
     def loop(self):
         """Check each reminder"""
         current_time = time.time()
-        for day_delay, text in self.reminders:
-            if text not in self.states:
-                self.states[text] = []
-                self.do_remind(text)
+        for day_delay, task in self.reminders:
+            if task not in self.states:
+                self.states[task] = []
+                self.do_remind(task)
 
-            elif self.states[text]:  # If there are timestamps
-                last_reminder = self.states[text][-1]
+            elif self.states[task]:  # If there are timestamps
+                last_reminder = self.states[task][-1]
                 days_since = (current_time - last_reminder) / (24 * 3600)
                 chance = random.random()
                 threshold = 1 / day_delay
                 if days_since >= day_delay:
-                    self.do_remind(text, extra=f"\nMessage every {day_delay} days")
+                    self.do_remind(task, extra=f"\nMessage every {day_delay} days")
                 elif chance <= threshold:
                     if self.verbose:
-                        self.do_remind(text, extra=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
+                        self.do_remind(task, extra=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
                     else:
-                        self.do_remind(text)
+                        self.do_remind(task)
 
 
-    def do_remind(self, text: str, extra: str = ""):
+    def do_remind(self, task: str, extra: str = ""):
         if hasattr(self, "latest_notif"):
             # add a delay to reduce the strain on ntfy's servers
             diff = time.time() - self.latest_notif
             if diff <= 10:
                 time.sleep(max(0, 10 - diff))
         self.latest_notif = time.time()
-        self.__send_notif__(message=str(text) + str(extra))
-        self.states[text].append(int(time.time()))
+        self.__send_notif__(message=str(task) + str(extra))
+        self.states[task].append(int(time.time()))
         self.__save_states__()
 
 

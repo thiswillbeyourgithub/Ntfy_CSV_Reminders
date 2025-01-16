@@ -133,6 +133,7 @@ class NtfyCSVReminders:
     def __send_notif__(
         self,
         message: str,
+        title: str = "Reminder",
         ):
         """
         Send a notification to a specified ntfy.sh topic.
@@ -140,11 +141,12 @@ class NtfyCSVReminders:
         delay_arg = {}
         if self.delay:
             delay_arg["At"] = str(int(time.time()) + int(random.uniform(0, self.delay)))
+        message = message.encode(encoding='utf-8')
         requests.post(
             url=f"https://ntfy.sh/{self.ntfy_topic}" if "http" not in self.ntfy_topic else self.ntfy_topic,
-            data=message.encode(encoding='utf-8'),
+            data=message,
             headers={
-                "Title": "Reminder",
+                "Title": title,
                 **delay_arg,
                 # "Priority": "urgent",
                 # "Tags": "warning,skull"

@@ -93,7 +93,7 @@ class NtfyCSVReminders:
         try:
             self.loop()
         except Exception as e:
-            self.__send_notif__(f"Error: '{e}'")
+            self.__send_notif__(title=f"Reminder - Error: '{e}'", message=str(e))
 
 
     def loop(self):
@@ -110,30 +110,30 @@ class NtfyCSVReminders:
                 chance = random.random()
                 threshold = 1 / day_delay
                 if days_since >= day_delay:
-                    self.do_remind(task, extra=f"\nMessage every {day_delay} days")
+                    self.do_remind(task=task, context=f"\nMessage every {day_delay} days")
                 elif chance <= threshold:
                     if self.verbose:
-                        self.do_remind(task, extra=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
+                        self.do_remind(task=task, context=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
                     else:
-                        self.do_remind(task)
+                        self.do_remind(task=task, context="")
 
 
-    def do_remind(self, task: str, extra: str = ""):
+    def do_remind(self, task: str, context: str):
         if hasattr(self, "latest_notif"):
             # add a delay to reduce the strain on ntfy's servers
             diff = time.time() - self.latest_notif
             if diff <= 10:
                 time.sleep(max(0, 10 - diff))
         self.latest_notif = time.time()
-        self.__send_notif__(message=str(task) + str(extra))
+        self.__send_notif__(title="Reminder - " + str(task), message=str(context))
         self.states[task].append(int(time.time()))
         self.__save_states__()
 
 
     def __send_notif__(
         self,
+        title: str,
         message: str,
-        title: str = "Reminder",
         ):
         """
         Send a notification to a specified ntfy.sh topic.

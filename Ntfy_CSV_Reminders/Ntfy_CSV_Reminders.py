@@ -102,7 +102,7 @@ class NtfyCSVReminders:
         for day_delay, task in self.reminders:
             if task not in self.states:
                 self.states[task] = []
-                self.do_remind(task)
+                self.do_remind(task, context="First run")
 
             elif self.states[task]:  # If there are timestamps
                 last_reminder = self.states[task][-1]

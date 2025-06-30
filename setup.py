@@ -1,4 +1,3 @@
-
 from setuptools import setup, find_packages
 from setuptools.command.install import install
 
@@ -13,24 +12,31 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/thiswillbeyourgithub/ntfy-csv-reminders",
     packages=find_packages(),
-
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
     license="GPLv3",
-    keywords=["ntfy.sh", "reminders", "csv", "tool", "memory", "distraction", "distracted", "todo", "list"],
+    keywords=[
+        "ntfy.sh",
+        "reminders",
+        "csv",
+        "tool",
+        "memory",
+        "distraction",
+        "distracted",
+        "todo",
+        "list",
+    ],
     python_requires=">=3.11",
-
     entry_points={
-        'console_scripts': [
-            'ntfy-csv-reminders=Ntfy_CSV_Reminders.__init__:cli_launcher',
+        "console_scripts": [
+            "ntfy-csv-reminders=Ntfy_CSV_Reminders.__init__:cli_launcher",
         ],
     },
-
     install_requires=[
-        'fire >= 0.6.0',
-        'requests',
-    ]
+        "fire >= 0.6.0",
+        "requests",
+    ],
 )

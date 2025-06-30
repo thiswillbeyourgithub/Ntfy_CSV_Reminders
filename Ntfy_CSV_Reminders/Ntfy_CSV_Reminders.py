@@ -7,7 +7,7 @@ import time
 from typing import Union, List, Tuple, Dict
 
 class NtfyCSVReminders:
-    __VERSION__: str = "0.1.1"
+    __VERSION__: str = "0.1.2"
 
     def __init__(
         self,

@@ -6,12 +6,12 @@ with open("README.md", "r") as readme:
     long_description = readme.read()
 
 setup(
-    name="Ntfy_CSV_Reminders",
+    name="ntfy-csv-reminders",
     version="0.1.2",
     description="Probabilistic daily reminders via ntfy from csv",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/thiswillbeyourgithub/Ntfy_CSV_Reminders",
+    url="https://github.com/thiswillbeyourgithub/ntfy-csv-reminders",
     packages=find_packages(),
 
     classifiers=[
@@ -25,7 +25,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'Ntfy_CSV_Reminders=Ntfy_CSV_Reminders.__init__:cli_launcher',
+            'ntfy-csv-reminders=Ntfy_CSV_Reminders.__init__:cli_launcher',
         ],
     },
 

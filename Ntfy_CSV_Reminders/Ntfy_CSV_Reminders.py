@@ -231,7 +231,6 @@ class NtfyCSVReminders:
                 text=f"Reminder: {task}",
                 notes=f"Recurring reminder (every {day_delay} days)\nOriginal CSV entry: {day_delay},{task}",
                 list_uid=target_list_uid,
-                priority=5,  # Medium priority
                 tags=["CSV_Reminders"],
             )
 

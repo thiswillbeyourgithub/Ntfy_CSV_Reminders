@@ -37,6 +37,6 @@ setup(
     },
     install_requires=[
         "fire >= 0.6.0",
-        "requests",
+        "requests >= 2.32.4",
     ],
 )

@@ -229,7 +229,8 @@ class NtfyCSVReminders:
         for day_delay, task in self.reminders:
             task_data = TaskData(
                 text=f"Reminder: {task}",
-                notes=f"Recurring reminder (every {day_delay} days)\nOriginal CSV entry: {day_delay},{task}",
+                notes=task,
+                description=f"Recurring reminder (every {day_delay} days)",
                 list_uid=target_list_uid,
                 tags=["CSV_Reminders"],
             )

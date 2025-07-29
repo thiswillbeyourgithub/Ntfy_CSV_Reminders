@@ -54,3 +54,24 @@ Example:
 ```bash
 Ntfy_CSV_Reminders --ntfy_topic=my_reminders --delay=1800 --input_csv=my_tasks.csv
 ```
+
+# CalDAV Integration (Optional)
+You can also automatically add your CSV reminders as tasks to a CalDAV-compatible task management system (like Nextcloud Tasks, Apple Reminders, etc.).
+
+To enable CalDAV integration:
+1. Install the optional dependency: `pip install caldav_tasks_api`
+2. Set up environment variables for your CalDAV server:
+   ```bash
+   export CALDAV_TASKS_API_URL="https://your-server.com/remote.php/dav/"
+   export CALDAV_TASKS_API_USERNAME="your_username"
+   export CALDAV_TASKS_API_PASSWORD="your_password"
+   export CALDAV_TASKS_API_LIST_UID="your_task_list_uid"  # Optional, uses first available if not set
+   ```
+3. Add the `--also_add_to_caldav` flag when running:
+   ```bash
+   Ntfy_CSV_Reminders --ntfy_topic=my_reminders --also_add_to_caldav
+   ```
+
+Each CSV reminder will be created as a separate task in your CalDAV task list, with notes indicating the original frequency and source. This allows you to manage reminders both through notifications and your preferred task management app.
+
+Note: Both this package and caldav_tasks_api are created by the same author for seamless integration.

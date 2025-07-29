@@ -1,7 +1,7 @@
 import sys
 import fire
 
-from .Ntfy_CSV_Reminders import NtfyCSVReminders
+from .ntfy_csv_reminders import NtfyCSVReminders
 
 __all__ = ["NtfyCSVReminders"]
 

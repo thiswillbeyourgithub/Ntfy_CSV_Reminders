@@ -6,11 +6,13 @@ import random
 import time
 import os
 from typing import Union, List, Tuple, Dict
+
 try:
     from caldav_tasks_api import TasksAPI, TaskData
 except ImportError:
     TasksAPI = None
     TaskData = None
+
 
 class NtfyCSVReminders:
     __VERSION__: str = "0.1.3"
@@ -22,9 +24,8 @@ class NtfyCSVReminders:
         delay: int = 0,
         ntfy_topic: str = None,
         verbose: bool = False,
-        also_add_to_caldav: bool = False
-        ) -> None:
-
+        also_add_to_caldav: bool = False,
+    ) -> None:
         """
         Initialize the NtfyCSVReminders class
 
@@ -54,21 +55,27 @@ class NtfyCSVReminders:
 
         # Load and validate CSV
         self.reminders: List[Tuple[int, str]] = []
-        with open(self.input_csv, 'r') as f:
+        with open(self.input_csv, "r") as f:
             content = f.read()
         rows = content.strip().splitlines()
-        rows = [r.strip().split(",", 1) for r in rows if r.strip() and not r.startswith("#")]
+        rows = [
+            r.strip().split(",", 1) for r in rows if r.strip() and not r.startswith("#")
+        ]
         assert rows, "No rows found"
         for i, row in enumerate(rows):
             if len(row) != 2:
-                raise ValueError(f"Row {i} must have exactly 2 elements, got {len(row)}")
+                raise ValueError(
+                    f"Row {i} must have exactly 2 elements, got {len(row)}"
+                )
 
             day_delay, task = row
 
             try:
                 day_delay = int(day_delay)
             except ValueError:
-                raise ValueError(f"Row {i}: First element must be a positive integer, got '{row[0]}'")
+                raise ValueError(
+                    f"Row {i}: First element must be a positive integer, got '{row[0]}'"
+                )
             if day_delay <= 0:
                 raise ValueError
 
@@ -82,13 +89,17 @@ class NtfyCSVReminders:
         # Check for duplicate reminder texts
         reminder_texts = [reminder[1] for reminder in self.reminders]
         if len(reminder_texts) != len(set(reminder_texts)):
-            duplicates = [text for text in reminder_texts if reminder_texts.count(text) > 1]
-            raise ValueError(f"Duplicate reminder texts found: {', '.join(set(duplicates))}")
+            duplicates = [
+                text for text in reminder_texts if reminder_texts.count(text) > 1
+            ]
+            raise ValueError(
+                f"Duplicate reminder texts found: {', '.join(set(duplicates))}"
+            )
 
         # Load or create states file
         self.states: Dict[str, List[int]] = {}
         if self.states_path.exists():
-            with open(self.states_path, 'r') as f:
+            with open(self.states_path, "r") as f:
                 content = f.read().strip()
             if content:
                 loaded = json.loads(content)
@@ -97,7 +108,7 @@ class NtfyCSVReminders:
                     self.states[k] = v
         else:
             # Create empty states file
-            with open(self.states_path, 'w') as f:
+            with open(self.states_path, "w") as f:
                 json.dump(self.states, f)
 
         for k, v in self.states.items():
@@ -115,7 +126,6 @@ class NtfyCSVReminders:
         except Exception as e:
             self.__send_notif__(title=f"Reminder - Error: '{e}'", message=str(e))
 
-
     def loop(self):
         """Check each reminder"""
         current_time = time.time()
@@ -130,13 +140,17 @@ class NtfyCSVReminders:
                 chance = random.random()
                 threshold = 1 / day_delay
                 if days_since >= day_delay:
-                    self.do_remind(task=task, context=f"\nMessage every {day_delay} days")
+                    self.do_remind(
+                        task=task, context=f"\nMessage every {day_delay} days"
+                    )
                 elif chance <= threshold:
                     if self.verbose:
-                        self.do_remind(task=task, context=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days")
+                        self.do_remind(
+                            task=task,
+                            context=f"\nChance: {chance:.4f}\nThreshold: {threshold:.4f}\nMessage every {day_delay} days",
+                        )
                     else:
                         self.do_remind(task=task, context="")
-
 
     def do_remind(self, task: str, context: str):
         if hasattr(self, "latest_notif"):
@@ -149,21 +163,24 @@ class NtfyCSVReminders:
         self.states[task].append(int(time.time()))
         self.__save_states__()
 
-
     def __send_notif__(
         self,
         title: str,
         message: str,
-        ):
+    ):
         """
         Send a notification to a specified ntfy.sh topic.
         """
         delay_arg = {}
         if self.delay:
             delay_arg["At"] = str(int(time.time()) + int(random.uniform(0, self.delay)))
-        message = message.encode(encoding='utf-8')
+        message = message.encode(encoding="utf-8")
         requests.post(
-            url=f"https://ntfy.sh/{self.ntfy_topic}" if "http" not in self.ntfy_topic else self.ntfy_topic,
+            url=(
+                f"https://ntfy.sh/{self.ntfy_topic}"
+                if "http" not in self.ntfy_topic
+                else self.ntfy_topic
+            ),
             data=message,
             headers={
                 "Title": title,
@@ -174,13 +191,13 @@ class NtfyCSVReminders:
         )
 
     def __save_states__(self):
-        with open(self.states_path, 'w') as f:
+        with open(self.states_path, "w") as f:
             f.write(json.dumps(self.states, indent=2, ensure_ascii=False))
 
     def __add_to_caldav__(self):
         """
         Add CSV reminders to CalDAV task list.
-        
+
         Requires environment variables:
         - CALDAV_TASKS_API_URL: CalDAV server URL
         - CALDAV_TASKS_API_USERNAME: Username
@@ -188,28 +205,30 @@ class NtfyCSVReminders:
         - CALDAV_TASKS_API_LIST_UID: Target task list UID (optional, uses first available if not set)
         """
         if TasksAPI is None or TaskData is None:
-            raise ImportError("caldav_tasks_api package is required for CalDAV integration. Install with: pip install caldav_tasks_api")
-        
+            raise ImportError(
+                "caldav_tasks_api package is required for CalDAV integration. Install with: pip install caldav_tasks_api"
+            )
+
         # Initialize the API with environment variables
         api = TasksAPI(
             url=os.environ.get("CALDAV_TASKS_API_URL"),
             username=os.environ.get("CALDAV_TASKS_API_USERNAME"),
             password=os.environ.get("CALDAV_TASKS_API_PASSWORD"),
         )
-        
+
         # Load all task lists and their tasks from the server
         api.load_remote_data()
-        
+
         if not api.task_lists:
             raise ValueError("No task lists found in CalDAV server")
-        
+
         # Determine target list UID
         target_list_uid = os.environ.get("CALDAV_TASKS_API_LIST_UID")
         if not target_list_uid:
             target_list_uid = api.task_lists[0].uid
             if self.verbose:
                 print(f"Using first available task list: {api.task_lists[0].name}")
-        
+
         # Add each reminder as a task
         for day_delay, task in self.reminders:
             task_data = TaskData(
@@ -218,14 +237,16 @@ class NtfyCSVReminders:
                 list_uid=target_list_uid,
                 priority=5,  # Medium priority
             )
-            
+
             # Add custom properties to track this is from CSV reminders
             task_data.x_properties["X-CSV-REMINDER-DAYS"] = str(day_delay)
             task_data.x_properties["X-CSV-REMINDER-SOURCE"] = str(self.input_csv)
-            
+
             created_task = api.add_task(task_data, target_list_uid)
             if self.verbose:
-                print(f"Added task to CalDAV: '{created_task.text}' (UID: {created_task.uid})")
+                print(
+                    f"Added task to CalDAV: '{created_task.text}' (UID: {created_task.uid})"
+                )
 
 
 if __name__ == "__main__":

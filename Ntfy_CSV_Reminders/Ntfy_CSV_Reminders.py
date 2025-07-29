@@ -7,11 +7,7 @@ import time
 import os
 from typing import Union, List, Tuple, Dict
 
-try:
-    from caldav_tasks_api import TasksAPI, TaskData
-except ImportError:
-    TasksAPI = None
-    TaskData = None
+from caldav_tasks_api import TasksAPI, TaskData
 
 
 class NtfyCSVReminders:

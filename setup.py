@@ -32,7 +32,7 @@ setup(
     python_requires=">=3.11",
     entry_points={
         "console_scripts": [
-            "ntfy-csv-reminders=Ntfy_CSV_Reminders.__init__:cli_launcher",
+            "ntfy-csv-reminders=ntfy_csv_reminders.__init__:cli_launcher",
         ],
     },
     install_requires=[

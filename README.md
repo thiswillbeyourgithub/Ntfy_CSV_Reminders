@@ -1,5 +1,5 @@
 
-# Ntfy_CSV_Reminders
+# ntfy_csv_reminders
 A Python tool that sends random-timing phone notifications for recurring tasks by using daily probability checks based on CSV-defined frequencies.
 
 Simple phone notifications with random timing. Just write a csv file like:
@@ -12,9 +12,9 @@ Run it daily (via cron) and it uses probability to make reminders feel spontaneo
 
 # Getting started
 * From pypi:
-    * As a tool: `uvx Ntfy_CSV_Reminders@latest --help`
-    * Via uv: `uv pip install Ntfy_CSV_Reminders`
-    * Via pip: `pip install Ntfy_CSV_Reminders`
+    * As a tool: `uvx ntfy_csv_reminders@latest --help`
+    * Via uv: `uv pip install ntfy_csv_reminders`
+    * Via pip: `pip install ntfy_csv_reminders`
 * From github:
     * Clone this repo then `pip install .`
 
@@ -36,7 +36,7 @@ For example, with `5, Remember to water the plants`:
 
 # Usage
 ```bash
-Ntfy_CSV_Reminders --ntfy_topic=your_topic [OPTIONS]
+ntfy_csv_reminders --ntfy_topic=your_topic [OPTIONS]
 ```
 
 Required:
@@ -52,7 +52,7 @@ The `delay` parameter is particularly useful when running via cron. Instead of g
 
 Example:
 ```bash
-Ntfy_CSV_Reminders --ntfy_topic=my_reminders --delay=1800 --input_csv=my_tasks.csv
+ntfy_csv_reminders --ntfy_topic=my_reminders --delay=1800 --input_csv=my_tasks.csv
 ```
 
 # CalDAV Integration (Optional)
@@ -69,7 +69,7 @@ To enable CalDAV integration:
    ```
 3. Add the `--also_add_to_caldav` flag when running:
    ```bash
-   Ntfy_CSV_Reminders --ntfy_topic=my_reminders --also_add_to_caldav
+   ntfy_csv_reminders --ntfy_topic=my_reminders --also_add_to_caldav
    ```
 
 Each CSV reminder will be created as a separate task in your CalDAV task list, with notes indicating the original frequency and source. This allows you to manage reminders both through notifications and your preferred task management app.

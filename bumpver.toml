@@ -12,5 +12,5 @@ push = false
 [bumpver.file_patterns]
 "bumpver.toml" = ['current_version = "{version}"']
 "setup.py" = ['version="{version}"']
-"Ntfy_CSV_Reminders/Ntfy_CSV_Reminders.py" = ['__VERSION__: str = "{version}"']
+"ntfy_csv_reminders/ntfy_csv_reminders.py" = ['__VERSION__: str = "{version}"']
 

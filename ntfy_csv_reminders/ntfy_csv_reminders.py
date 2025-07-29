@@ -15,10 +15,10 @@ class NtfyCSVReminders:
 
     def __init__(
         self,
+        ntfy_topic: str,
         input_csv: Union[str, Path] = "inputs.csv",
         states_path: Union[str, Path] = "states.json",
         delay: int = 0,
-        ntfy_topic: str = None,
         verbose: bool = False,
         also_add_to_caldav: bool = False,
     ) -> None:
@@ -26,11 +26,11 @@ class NtfyCSVReminders:
         Initialize the NtfyCSVReminders class
 
         Args:
+            ntfy_topic: ntfy.sh topic, required
             input_csv: Path to input CSV file
             states_path: Path to states file
             delay: An interval beteen 0 and delay will occur before you
             receive the notification, ensuring "unexpectedness"
-            ntfy_topic: ntfy.sh topic
             verbose: Enable verbose output
             also_add_to_caldav: If True, also add reminders to CalDAV task list.
                 Requires caldav_tasks_api package. Connection details should be in

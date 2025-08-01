@@ -241,7 +241,7 @@ class NtfyCSVReminders:
             created_task = api.add_task(task_data, target_list_uid)
             if self.verbose:
                 print(
-                    f"Added task to CalDAV: '{created_task.text}' (UID: {created_task.uid})"
+                    f"Added task to CalDAV: '{created_task.summary}' (UID: {created_task.uid})"
                 )
 
 

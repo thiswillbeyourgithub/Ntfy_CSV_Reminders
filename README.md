@@ -65,7 +65,7 @@ To enable CalDAV integration:
    export CALDAV_TASKS_API_URL="https://your-server.com/remote.php/dav/"
    export CALDAV_TASKS_API_USERNAME="your_username"
    export CALDAV_TASKS_API_PASSWORD="your_password"
-   export CALDAV_TASKS_API_LIST_UID="your_task_list_uid"  # Optional, uses first available if not set
+   export CALDAV_TASKS_API_DEFAULT_LIST_UID="your_task_list_uid"  # Optional, uses first available if not set
    ```
 3. Add the `--also_add_to_caldav` flag when running:
    ```bash

@@ -198,7 +198,7 @@ class NtfyCSVReminders:
         - CALDAV_TASKS_API_URL: CalDAV server URL
         - CALDAV_TASKS_API_USERNAME: Username
         - CALDAV_TASKS_API_PASSWORD: Password
-        - CALDAV_TASKS_API_LIST_UID: Target task list UID (optional, uses first available if not set)
+        - CALDAV_TASKS_API_DEFAULT_LIST_UID: Target task list UID (optional, uses first available if not set)
         """
         if TasksAPI is None or TaskData is None:
             raise ImportError(
@@ -219,7 +219,7 @@ class NtfyCSVReminders:
             raise ValueError("No task lists found in CalDAV server")
 
         # Determine target list UID
-        target_list_uid = os.environ.get("CALDAV_TASKS_API_LIST_UID")
+        target_list_uid = os.environ.get("CALDAV_TASKS_API_DEFAULT_LIST_UID")
         if not target_list_uid:
             target_list_uid = api.task_lists[0].uid
             if self.verbose:

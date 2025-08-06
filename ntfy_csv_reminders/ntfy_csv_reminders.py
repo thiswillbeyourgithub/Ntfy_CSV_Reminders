@@ -110,13 +110,6 @@ class NtfyCSVReminders:
         for k, v in self.states.items():
             self.states[k] = sorted(v)
 
-        # Add to CalDAV if requested
-        if self.also_add_to_caldav:
-            try:
-                self.__add_to_caldav__()
-            except Exception as e:
-                self.__send_notif__(title=f"CalDAV Error: '{e}'", message=str(e))
-
         try:
             self.loop()
         except Exception as e:
@@ -156,6 +149,16 @@ class NtfyCSVReminders:
                 time.sleep(max(0, 10 - diff))
         self.latest_notif = time.time()
         self.__send_notif__(title="Reminder - " + str(task), message=str(context))
+
+        # Add to CalDAV if requested - only for the current task being reminded
+        if self.also_add_to_caldav:
+            try:
+                # Find the day_delay for this task
+                day_delay = next(delay for delay, t in self.reminders if t == task)
+                self.__add_to_caldav__(task, day_delay)
+            except Exception as e:
+                self.__send_notif__(title=f"CalDAV Error: '{e}'", message=str(e))
+
         self.states[task].append(int(time.time()))
         self.__save_states__()
 
@@ -190,9 +193,13 @@ class NtfyCSVReminders:
         with open(self.states_path, "w") as f:
             f.write(json.dumps(self.states, indent=2, ensure_ascii=False))
 
-    def __add_to_caldav__(self):
+    def __add_to_caldav__(self, task: str, day_delay: int):
         """
-        Add CSV reminders to CalDAV task list.
+        Add a specific CSV reminder to CalDAV task list.
+
+        Args:
+            task: The task description to add
+            day_delay: The day delay for this task
 
         Requires environment variables:
         - CALDAV_TASKS_API_URL: CalDAV server URL
@@ -225,24 +232,23 @@ class NtfyCSVReminders:
             if self.verbose:
                 print(f"Using first available task list: {api.task_lists[0].name}")
 
-        # Add each reminder as a task
-        for day_delay, task in self.reminders:
-            task_data = TaskData(
-                summary=task,
-                description=f"Recurring reminder (every {day_delay} days)",
-                list_uid=target_list_uid,
-                tags=["CSV_Reminders"],
+        # Add the specific reminder as a task
+        task_data = TaskData(
+            summary=task,
+            description=f"Recurring reminder (every {day_delay} days)",
+            list_uid=target_list_uid,
+            tags=["CSV_Reminders"],
+        )
+
+        # Add custom properties to track this is from CSV reminders
+        task_data.x_properties["X-CSV-REMINDER-DAYS"] = str(day_delay)
+        task_data.x_properties["X-CSV-REMINDER-SOURCE"] = str(self.input_csv)
+
+        created_task = api.add_task(task_data, target_list_uid)
+        if self.verbose:
+            print(
+                f"Added task to CalDAV: '{created_task.summary}' (UID: {created_task.uid})"
             )
-
-            # Add custom properties to track this is from CSV reminders
-            task_data.x_properties["X-CSV-REMINDER-DAYS"] = str(day_delay)
-            task_data.x_properties["X-CSV-REMINDER-SOURCE"] = str(self.input_csv)
-
-            created_task = api.add_task(task_data, target_list_uid)
-            if self.verbose:
-                print(
-                    f"Added task to CalDAV: '{created_task.summary}' (UID: {created_task.uid})"
-                )
 
 
 if __name__ == "__main__":

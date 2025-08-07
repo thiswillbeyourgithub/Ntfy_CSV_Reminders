@@ -11,7 +11,7 @@ from caldav_tasks_api import TasksAPI, TaskData
 
 
 class NtfyCSVReminders:
-    __VERSION__: str = "0.1.12"
+    __VERSION__: str = "0.1.13"
 
     def __init__(
         self,

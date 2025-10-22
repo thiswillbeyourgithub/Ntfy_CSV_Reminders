@@ -38,6 +38,6 @@ setup(
     install_requires=[
         "fire >= 0.6.0",
         "requests >= 2.32.4",
-        "caldav-tasks-api >= 1.4.0"
+        "caldav-tasks-api >= 1.6.0"
     ],
 )

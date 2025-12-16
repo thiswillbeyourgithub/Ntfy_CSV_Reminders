@@ -14,10 +14,8 @@ setup(
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
-    license="GPLv3",
     keywords=[
         "ntfy.sh",
         "reminders",
